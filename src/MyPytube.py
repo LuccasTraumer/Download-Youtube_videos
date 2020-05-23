@@ -1,31 +1,19 @@
 import pytube
 import  os
 caminho = 'C:/Users/Lucas/Downloads/API_DOWNLOAD'
-
-def download_video(link_video = str, resolução='720p'):
+resolucoes = ['144p','240p','360p','480p','720p','1080p','144','240','360','480','720','1080']
+def download_video(link_video = str, resolução='360p'):
     try:
         youtube = pytube.YouTube(link_video).streams
-        if resolução == '720p' or '1080p' or '1080' or '720':
-            youtube = high_resolution(youtube,resolução)
+        if resolução in resolucoes:
+            if resolução == '144' or resolução == '240' or resolução =='360'or resolução =='480'or resolução =='720' or resolução =='1080':
+                resolução = (f"{resolução}p")
         if not os.path.exists(caminho):
             os.mkdir(caminho)
     except:
         return 'URL invalida!'
     else:
-        make_download(youtube)
+        youtube.filter(res=resolução).first().download(caminho)
         return "Download Finalizado!"
 
     #youtube.filter(file_extension='mp4', progressive=True).order_by('resolution').first().download(caminho)
-
-
-def make_download(obj_video = pytube.YouTube):
-    obj_video.download(caminho)
-
-
-def high_resolution(obj_video = pytube.YouTube,resolucao = str):
-    data = obj_video
-    if resolucao == '1080' or resolucao == '720':
-        resolucao = (f"{resolucao}p")
-    for video in data.itag_index.items():
-        if video[1].resolution == resolucao:
-            return video
